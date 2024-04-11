@@ -9,11 +9,12 @@ public class PlayerMovement : MonoBehaviour
     private float verticalVelocity;
     private float groundedTimer;
     private bool DoubleJump = false;
+    private bool isDashing = false; // New variable to track dashing state
     public float playerSpeed = 5.0f;
     public float jumpHeight = 4.0f;
-    public float originalGravity = 9.81f;
-    private float gravityValue = 9.81f;
-    private bool isFalling = false;
+    public float gravityValue = 9.81f;
+    public float dashSpeed = 10.0f; // Speed for dashing
+    public float dashDuration = 0.5f; // Duration of dash in seconds
 
     private void Start()
     {
@@ -29,7 +30,6 @@ public class PlayerMovement : MonoBehaviour
             DoubleJump = true;
             // cooldown interval to allow reliable jumping even when coming down ramps
             groundedTimer = 0.2f;
-            isFalling = false;
         }
         if (groundedTimer > 0)
         {
@@ -45,16 +45,6 @@ public class PlayerMovement : MonoBehaviour
 
         // Apply gravity
         float currentGravity = gravityValue;
-        if (!groundedPlayer && verticalVelocity < 0)
-        {
-            // Reduce gravity only when falling and shift is pressed
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                currentGravity *= 0.1f;
-            }
-            isFalling = true;
-        }
-
         verticalVelocity -= currentGravity * Time.deltaTime;
 
         // Gather lateral input control relative to camera
@@ -65,12 +55,6 @@ public class PlayerMovement : MonoBehaviour
 
         // Scale by speed
         move *= playerSpeed;
-
-        // Increase movement speed when falling and shift is pressed
-        if (!isFalling && Input.GetKey(KeyCode.LeftShift))
-        {
-            move *= 1.5f; // Doubling the movement speed
-        }
 
         // Only align to motion if we are providing enough input
         if (move.magnitude > 0.05f)
@@ -89,16 +73,22 @@ public class PlayerMovement : MonoBehaviour
                 groundedTimer = 0;
 
                 // Physics dynamics formula for calculating jump up velocity based on height and gravity
-                verticalVelocity = Mathf.Sqrt(jumpHeight * 2 * originalGravity);
+                verticalVelocity = Mathf.Sqrt(jumpHeight * 2 * gravityValue);
             }
             else
             {
                 if (DoubleJump)
                 {
                     DoubleJump = false;
-                    verticalVelocity = Mathf.Sqrt(jumpHeight * 2 * originalGravity);
+                    verticalVelocity = Mathf.Sqrt(jumpHeight * 2 * gravityValue);
                 }
             }
+        }
+
+        // Dash input handling
+        if (Input.GetButtonDown("Fire3") && !isDashing)
+        {
+            StartCoroutine(Dash());
         }
 
         // Inject Y velocity before we use it
@@ -106,5 +96,21 @@ public class PlayerMovement : MonoBehaviour
 
         // Call .Move() once only
         controller.Move(move * Time.deltaTime);
+    }
+
+    IEnumerator Dash()
+    {
+        isDashing = true;
+        float startTime = Time.time;
+
+        // Dashing loop
+        while (Time.time < startTime + dashDuration)
+        {
+            controller.Move(transform.forward * dashSpeed * Time.deltaTime); 
+            
+            yield return null;
+        }
+
+        isDashing = false;
     }
 }
