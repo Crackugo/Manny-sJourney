@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -7,19 +6,23 @@ public class PlayerMovement : MonoBehaviour
     public Camera camera;
     private CharacterController controller;
     private float verticalVelocity;
-    private float groundedTimer;
-    private bool DoubleJump = false;
-    private bool isDashing = false; // New variable to track dashing state
+    private bool doubleJump = false;
+    private bool isDashing = false;
+    private bool canDash = false;
+    private bool isCtrlPressed = false;
+    private float originalMaxFallSpeed;
+    private float ctrlPressedTime;
     public float playerSpeed = 5.0f;
     public float jumpHeight = 4.0f;
     public float gravityValue = 9.81f;
-    public float dashSpeed = 10.0f; // Speed for dashing
-    public float dashDuration = 0.5f; // Duration of dash in seconds
+    public float maxFallSpeed = -20f; 
+    public float dashSpeed = 10.0f; 
+    public float dashDuration = 0.5f; 
 
     private void Start()
     {
-        // always add a controller
         controller = gameObject.AddComponent<CharacterController>();
+        originalMaxFallSpeed = maxFallSpeed;
     }
 
     void Update()
@@ -27,75 +30,69 @@ public class PlayerMovement : MonoBehaviour
         bool groundedPlayer = controller.isGrounded;
         if (groundedPlayer)
         {
-            DoubleJump = true;
-            // cooldown interval to allow reliable jumping even when coming down ramps
-            groundedTimer = 0.2f;
-        }
-        if (groundedTimer > 0)
-        {
-            groundedTimer -= Time.deltaTime;
+            canDash = true;
+            doubleJump = true;
         }
 
-        // slam into the ground
-        if (groundedPlayer && verticalVelocity < 0)
-        {
-            // hit ground
-            verticalVelocity = 0f;
-        }
-
-        // Apply gravity
         float currentGravity = gravityValue;
-        verticalVelocity -= currentGravity * Time.deltaTime;
 
-        // Gather lateral input control relative to camera
+        verticalVelocity = Mathf.Clamp(verticalVelocity - currentGravity * Time.deltaTime, maxFallSpeed, Mathf.Infinity);
+
+        verticalVelocity = Mathf.Max(verticalVelocity, maxFallSpeed);
+
         Vector3 move = camera.transform.forward * Input.GetAxis("Vertical") + camera.transform.right * Input.GetAxis("Horizontal");
-
-        // Restrict movement to X and Z axes (horizontal movement)
         move.y = 0;
-
-        // Scale by speed
         move *= playerSpeed;
 
-        // Only align to motion if we are providing enough input
         if (move.magnitude > 0.05f)
         {
-            // Align with the direction of movement
             transform.forward = move.normalized;
         }
 
-        // Allow jump as long as the player is on the ground
         if (Input.GetButtonDown("Jump"))
         {
-            // Must have been grounded recently to allow jump
-            if (groundedTimer > 0)
+            if (groundedPlayer)
             {
-                // No more until we recontact ground
-                groundedTimer = 0;
-
-                // Physics dynamics formula for calculating jump up velocity based on height and gravity
-                verticalVelocity = Mathf.Sqrt(jumpHeight * 2 * gravityValue);
+                verticalVelocity = jumpHeight;
             }
             else
             {
-                if (DoubleJump)
+                if (doubleJump)
                 {
-                    DoubleJump = false;
-                    verticalVelocity = Mathf.Sqrt(jumpHeight * 2 * gravityValue);
+                    doubleJump = false;
+                    verticalVelocity = jumpHeight;
                 }
             }
         }
 
-        // Dash input handling
-        if (Input.GetButtonDown("Fire3") && !isDashing)
+        // Check if Ctrl key is pressed
+        if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl))
         {
-            StartCoroutine(Dash());
+            isCtrlPressed = true;
+            ctrlPressedTime = Time.time;
+            maxFallSpeed = -1f; // Set max fall speed to -1
         }
 
-        // Inject Y velocity before we use it
-        move.y = verticalVelocity;
+        // Reset max fall speed after 2 seconds or when touching the ground
+        if (isCtrlPressed && (Time.time - ctrlPressedTime >= 2f || groundedPlayer))
+        {
+            isCtrlPressed = false;
+            maxFallSpeed = originalMaxFallSpeed;
+        }
 
-        // Call .Move() once only
+        if (Input.GetButtonDown("Fire3") && !isDashing && canDash)
+        {
+            canDash = false;
+            StartCoroutine(Dash());
+        }
+        if (isDashing)
+        {
+            verticalVelocity = 0;
+        }
+        move.y = verticalVelocity;
         controller.Move(move * Time.deltaTime);
+
+        transform.rotation = Quaternion.Euler(0, camera.transform.eulerAngles.y, 0);
     }
 
     IEnumerator Dash()
@@ -103,11 +100,12 @@ public class PlayerMovement : MonoBehaviour
         isDashing = true;
         float startTime = Time.time;
 
-        // Dashing loop
         while (Time.time < startTime + dashDuration)
         {
-            controller.Move(transform.forward * dashSpeed * Time.deltaTime); 
-            
+            Vector3 moveDash = transform.forward * dashSpeed * Time.deltaTime;
+            moveDash.y = 0;
+
+            controller.Move(moveDash);
             yield return null;
         }
 
