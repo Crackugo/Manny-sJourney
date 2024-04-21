@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isDashing = false;
     private bool canDash = false;
     private bool isCtrlPressed = false;
+    private bool canFly = false;
     private float originalMaxFallSpeed;
     private float ctrlPressedTime;
     public float playerSpeed = 5.0f;
@@ -31,7 +32,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other){
 
-        Debug.Log("Touched: " + other.GetComponent<Collider>().name);
         if (other.CompareTag("Bench")) // Assuming the benches have a tag named "Bench"
         {
             
@@ -47,7 +47,17 @@ public class PlayerMovement : MonoBehaviour
             {
                 Debug.LogWarning("No last bench touched!");
             }
-        }
+        }    
+        else if (other.CompareTag("Spike")){
+            if (bench != null)
+            {
+                TeleportPlayerToLastBench();
+            }
+            else
+            {
+                Debug.LogWarning("No last bench touched!");
+            }
+        }   
     }
 
     private void TeleportPlayerToLastBench()
@@ -55,27 +65,26 @@ public class PlayerMovement : MonoBehaviour
         controller.enabled = false;
         controller.transform.position = bench.transform.position+new Vector3(0,0,0);
         move=new Vector3(0,0,0);
-        verticalVelocity=0;
+        verticalVelocity=0;    
         controller.enabled = true;
     }
 
 
     void Update()
     {
-        bool groundedPlayer = controller.isGrounded;
+         bool groundedPlayer = controller.isGrounded;
         float currentGravity = gravityValue;
         if (groundedPlayer)
         {
             canDash = true;
             doubleJump = true;
+            canFly=true;
             verticalVelocity=-1;
         }else{
             verticalVelocity = Mathf.Clamp(verticalVelocity - currentGravity * Time.deltaTime, maxFallSpeed, Mathf.Infinity);
 
             verticalVelocity = Mathf.Max(verticalVelocity, maxFallSpeed);
         }
-
-
 
         move = camera.transform.forward * Input.GetAxis("Vertical") + camera.transform.right * Input.GetAxis("Horizontal");
         move.y = 0;
@@ -102,12 +111,14 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-           // Check if Ctrl key is pressed
-        if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl))
+       
+        // Check if Ctrl key is pressed
+        if ((Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl))&&canFly)
         {
             isCtrlPressed = true;
             ctrlPressedTime = Time.time;
             maxFallSpeed = -1f; // Set max fall speed to -1
+            playerSpeed/=1.5f;
         }
 
         // Check if Ctrl key is released
@@ -115,11 +126,13 @@ public class PlayerMovement : MonoBehaviour
         {
             isCtrlPressed = false;
             maxFallSpeed = originalMaxFallSpeed;
+            playerSpeed*=1.5f;
         }
 
         // If Ctrl key is continuously pressed for more than 2 seconds, reset max fall speed
         if (isCtrlPressed && (Time.time - ctrlPressedTime >= 2f))
-        {
+        {   
+            canFly=false;
             isCtrlPressed = false;
             maxFallSpeed = originalMaxFallSpeed;
         }
@@ -130,14 +143,21 @@ public class PlayerMovement : MonoBehaviour
             maxFallSpeed = originalMaxFallSpeed;
         }
 
-
+  
         if (Input.GetButtonDown("Fire3") && !isDashing && canDash)
         {
             canDash = false;
-            StartCoroutine(Dash());
+            StartCoroutine(Dash(groundedPlayer,transform.forward ));
         }
         if (isDashing)
         {
+            verticalVelocity = 0;
+        }
+        
+        if (controller.collisionFlags == CollisionFlags.Above && verticalVelocity > 0)
+        {
+            // If there's a collision from below and the vertical velocity is positive,
+            // set the vertical velocity to 0 to prevent further upward movement.
             verticalVelocity = 0;
         }
         move.y = verticalVelocity;
@@ -147,20 +167,32 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    IEnumerator Dash()
+IEnumerator Dash(bool ground, Vector3 dashDirection)
+{
+    isDashing = true;
+    float startTime = Time.time;
+
+    while (Time.time < startTime + dashDuration)
     {
-        isDashing = true;
-        float startTime = Time.time;
-
-        while (Time.time < startTime + dashDuration)
+        if (Input.GetButtonDown("Jump") && ground)
         {
-            Vector3 moveDash = transform.forward * dashSpeed * Time.deltaTime;
-            moveDash.y = 0;
+            if (ground){
+                verticalVelocity = jumpSpeed;
+                doubleJump=true;
+            }
 
-            controller.Move(moveDash);
-            yield return null;
+            isDashing = false; // Exit dash
+            canDash=true;
+
+            break;
         }
-
-        isDashing = false;
+        Vector3 moveDash = dashDirection * dashSpeed * Time.deltaTime;
+        moveDash.y = 0;
+        controller.Move(moveDash);
+        yield return null;
     }
+
+    isDashing = false;
+}
+
 }

@@ -7,6 +7,7 @@ TagManager:
   - RespawnBox
   - Bench
   - Guy
+  - Spike
   layers:
   - Default
   - TransparentFX
