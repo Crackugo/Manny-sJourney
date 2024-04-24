@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public Camera camera;
+    public HealthBar healthBar;
     private CharacterController controller;
     public float verticalVelocity;
     private bool doubleJump = false;
@@ -31,6 +32,13 @@ public class PlayerMovement : MonoBehaviour
     public GameObject bench; // Reference to the last bench touched by the player
 
     private void OnTriggerEnter(Collider other){
+
+        if (other.CompareTag("Projectile"))
+        {
+            
+            Destroy(other.gameObject); // Destroy the projectile
+            healthBar.takeDamage(20);
+        }
 
         if (other.CompareTag("Bench")) // Assuming the benches have a tag named "Bench"
         {
@@ -167,32 +175,32 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-IEnumerator Dash(bool ground, Vector3 dashDirection)
-{
-    isDashing = true;
-    float startTime = Time.time;
-
-    while (Time.time < startTime + dashDuration)
+    IEnumerator Dash(bool ground, Vector3 dashDirection)
     {
-        if (Input.GetButtonDown("Jump") && ground)
+        isDashing = true;
+        float startTime = Time.time;
+
+        while (Time.time < startTime + dashDuration)
         {
-            if (ground){
-                verticalVelocity = jumpSpeed;
-                doubleJump=true;
+            if (Input.GetButtonDown("Jump") && ground)
+            {
+                if (ground){
+                    verticalVelocity = jumpSpeed;
+                    doubleJump=true;
+                }
+
+                isDashing = false; // Exit dash
+                canDash=true;
+
+                break;
             }
-
-            isDashing = false; // Exit dash
-            canDash=true;
-
-            break;
+            Vector3 moveDash = dashDirection * dashSpeed * Time.deltaTime;
+            moveDash.y = 0;
+            controller.Move(moveDash);
+            yield return null;
         }
-        Vector3 moveDash = dashDirection * dashSpeed * Time.deltaTime;
-        moveDash.y = 0;
-        controller.Move(moveDash);
-        yield return null;
-    }
 
-    isDashing = false;
-}
+        isDashing = false;
+    }
 
 }

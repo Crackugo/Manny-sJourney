@@ -8,6 +8,7 @@ TagManager:
   - Bench
   - Guy
   - Spike
+  - Projectile
   layers:
   - Default
   - TransparentFX
