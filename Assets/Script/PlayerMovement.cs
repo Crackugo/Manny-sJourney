@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     public float dashSpeed = 10.0f; 
     public float dashDuration = 0.5f; 
     public Vector3 move;
+    public Animator animator;
 
     private void Start()
     {
@@ -76,6 +77,7 @@ public class PlayerMovement : MonoBehaviour
         float currentGravity = gravityValue;
         if (groundedPlayer)
         {
+            animator.SetBool("isJumping", false);
             canDash = true;
             doubleJump = true;
             canFly=true;
@@ -92,14 +94,18 @@ public class PlayerMovement : MonoBehaviour
 
         if (move.magnitude > 0.05f)
         {
+            animator.SetBool("isMoving", true);
             transform.forward = move.normalized;
         }
+        else { animator.SetBool("isMoving", false);}
 
         if (Input.GetButtonDown("Jump"))
         {
+            animator.SetBool("isJumping", true);
             if (groundedPlayer)
             {
                 verticalVelocity = jumpSpeed;
+                
             }
             else
             {
@@ -108,8 +114,10 @@ public class PlayerMovement : MonoBehaviour
                     doubleJump = false;
                     verticalVelocity = jumpSpeed;
                 }
+                
             }
         }
+        
 
        
         // Check if Ctrl key is pressed
