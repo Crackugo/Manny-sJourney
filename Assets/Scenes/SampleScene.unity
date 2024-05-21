@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.4498636, g: 0.4999286, b: 0.57558113, a: 1}
+  m_IndirectSpecularColor: {r: 0.44986397, g: 0.49992883, b: 0.5755816, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1151,14 +1151,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camera: {fileID: 963194227}
-  verticalVelocity: 0
-  playerSpeed: 7
+  playerMaxSpeed: 10
   jumpSpeed: 20
   gravityValue: 40
   maxFallSpeed: -20
   dashSpeed: 35
   dashDuration: 0.135
-  move: {x: 0, y: 0, z: 0}
+  raycastDistance: 1
   animator: {fileID: 336189375}
   bench: {fileID: 221093966}
 --- !u!1 &963194225
@@ -1266,6 +1265,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38fd1ba812506eb4da2782b424d9c1c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rotationSpeed: 30
+  zoomSpeed: 5
+  rotationDuration: 1.5
+  zoomDuration: 3
   player: {fileID: 898726854}
   distance: 7
   sensitivity: 2
