@@ -56,7 +56,7 @@ ModelImporter:
       name: saltar
       takeName: Armature|ArmatureAction.001
       internalID: -1422011007694221501
-      firstFrame: 0
+      firstFrame: 10
       lastFrame: 40
       wrapMode: 0
       orientationOffsetY: 0

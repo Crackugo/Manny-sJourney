@@ -8,6 +8,7 @@ TagManager:
   - Bench
   - Guy
   - Spike
+  - Wall
   layers:
   - Default
   - TransparentFX
