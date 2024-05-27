@@ -95,8 +95,22 @@ public class PlayerMovement : MonoBehaviour
         else if (other.CompareTag("MovingPlatform"))
         {
             originalParent = transform.parent;
-            transform.SetParent(other.transform);
+
+            // Find the child called "Icosphere" from the other object
+            Transform IcosphereTransform = other.transform.Find("Icosphere");
+            if (IcosphereTransform != null)
+            {
+                transform.SetParent(IcosphereTransform);
+            }
+            else
+            {
+                transform.SetParent(other.transform);
+            }
+
+            // Log the new parent of the object
+            Debug.Log("New parent: " + transform.parent.name);
         }
+
     }
 
     private void OnTriggerExit(Collider other)
