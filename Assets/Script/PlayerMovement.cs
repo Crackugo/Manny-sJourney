@@ -1,12 +1,11 @@
 using System.Collections;
 using UnityEngine;
 
-
 public class PlayerMovement : MonoBehaviour
 {
     // [Unity References]
     public Camera camera;
-    private CharacterController controller;
+    public CharacterController controller;
 
     // [Movement Parameters]
     public float playerMaxSpeed = 10.0f;
@@ -24,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     private bool canDash = false;
     private bool touchingWall = false;
     private bool isCtrlPressed = false;
+    private bool canJump = false;
 
     // [Input Handling Related Variables]
     private float ctrlPressedTime;
@@ -38,28 +38,28 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 move;
 
     public Animator animator;
+    public PlatformManager platformsManager;
 
     private void Start()
     {
-        controller = gameObject.AddComponent<CharacterController>();
         originalMaxFallSpeed = maxFallSpeed;
     }
 
-
     public GameObject bench; // Reference to the last bench touched by the player
+
+    private Transform originalParent; // Store the original parent of the player
 
     private void OnTriggerEnter(Collider other)
     {
-
         if (other.CompareTag("Bench")) // Assuming the benches have a tag named "Bench"
         {
-
             bench = other.gameObject; // Update the reference to the last bench touched
         }
         else if (other.CompareTag("RespawnBox")) // Assuming the respawn boxes have a tag named "RespawnBox"
         {
             if (bench != null)
             {
+                platformsManager.ResetAllPlatforms();
                 TeleportPlayerToLastBench(); // Teleport the player to the last bench touched
             }
             else
@@ -67,10 +67,16 @@ public class PlayerMovement : MonoBehaviour
                 Debug.LogWarning("No last bench touched!");
             }
         }
+        else if (other.CompareTag("FallingPlatform")) // Assuming the respawn boxes have a tag named "RespawnBox"
+        {
+            FallingPlatform fall = other.GetComponent<FallingPlatform>();
+            fall.StartFalling();
+        }
         else if (other.CompareTag("Spike"))
         {
             if (bench != null)
             {
+                platformsManager.ResetAllPlatforms();
                 TeleportPlayerToLastBench();
             }
             else
@@ -86,6 +92,11 @@ public class PlayerMovement : MonoBehaviour
         {
             jumpSpeed = 50;
         }
+        else if (other.CompareTag("MovingPlatform"))
+        {
+            originalParent = transform.parent;
+            transform.SetParent(other.transform);
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -95,28 +106,29 @@ public class PlayerMovement : MonoBehaviour
         {
             jumpSpeed = 20;
         }
+        else if (other.CompareTag("MovingPlatform"))
+        {
+            transform.SetParent(originalParent);
+        }
     }
 
     private void TeleportPlayerToLastBench()
     {
         controller.enabled = false;
-        controller.transform.position = bench.transform.position + new Vector3(0, 0, 0);
+        controller.transform.position = bench.transform.position + new Vector3(0, 1, 0);
         move = new Vector3(0, 0, 0);
         yVelocity = 0;
         controller.enabled = true;
     }
-
 
     void Update()
     {
         bool groundedPlayer = (controller.collisionFlags & CollisionFlags.Below) != 0;
         float currentGravity = gravityValue;
 
-
-
         if (groundedPlayer)
         {
-
+            canJump = true;
             animator.SetBool("isJumping", false);
             frontVelocity = 0;
             sideVelocity = 0;
@@ -134,13 +146,10 @@ public class PlayerMovement : MonoBehaviour
             if (touchingWall && bonusV > 0 && Input.GetAxis("Vertical") <= 0.5)
             {
                 bonusV *= 0.9f;
-
             }
             yVelocity = Mathf.Clamp(yVelocity - currentGravity * Time.deltaTime, maxFallSpeed, Mathf.Infinity);
             yVelocity = Mathf.Max(yVelocity, maxFallSpeed);
         }
-
-
 
         frontVelocity = Input.GetAxis("Vertical") * playerMaxSpeed + bonusV;
         sideVelocity = Input.GetAxis("Horizontal") * playerMaxSpeed + Input.GetAxis("Horizontal");
@@ -155,11 +164,11 @@ public class PlayerMovement : MonoBehaviour
             lastVelocity = frontVelocity;
         }
 
-
         if (Input.GetButtonDown("Jump"))
         {
-            if (groundedPlayer)
+            if (canJump)
             {
+                canJump = false;
                 animator.SetBool("isJumping", true);
                 yVelocity = jumpSpeed;
             }
@@ -178,13 +187,11 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (Physics.Raycast(transform.position, transform.right, out hitRight, raycastDistance))
         {
-
             if (hitRight.collider.CompareTag("Wall"))
             {
                 touchingWall = true;
                 maxFallSpeed = -1f;
                 canDash = true;
-
             }
         }
         else
@@ -194,9 +201,7 @@ public class PlayerMovement : MonoBehaviour
                 maxFallSpeed = originalMaxFallSpeed;
                 touchingWall = false;
             }
-
         }
-
 
         if ((Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl)) && canFly)
         {
@@ -238,7 +243,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 bonusV = 10;
             }
-            StartCoroutine(Dash(groundedPlayer, transform.forward));
+            StartCoroutine(Dash(canJump, transform.forward));
             frontVelocity = playerMaxSpeed + bonusV;
             lastVelocity = frontVelocity;
         }
@@ -269,8 +274,6 @@ public class PlayerMovement : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, camera.transform.eulerAngles.y, 0);
     }
 
-
-
     IEnumerator Dash(bool ground, Vector3 dashDirection)
     {
         isDashing = true;
@@ -289,6 +292,7 @@ public class PlayerMovement : MonoBehaviour
 
                 isDashing = false; // Exit dash
                 canDash = true;
+                canJump = false;
                 break;
             }
             Vector3 moveDash = dashDirection * dashSpeed * Time.deltaTime;
@@ -298,9 +302,5 @@ public class PlayerMovement : MonoBehaviour
         }
 
         isDashing = false;
-
     }
-
-
-
 }

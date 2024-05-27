@@ -1,29 +1,9 @@
 fileFormatVersion: 2
-guid: 6940ffcac4af5364f9d5d094ddb3bb64
+guid: d14749f6a853ff54cb31b68414d0b39d
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: "Cal\xE7as"
-    second: {fileID: 2100000, guid: 3f14dcb1436357e409c8f5c9a6a2eb3e, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: camisola
-    second: {fileID: 2100000, guid: 3f14dcb1436357e409c8f5c9a6a2eb3e, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: chinelos
-    second: {fileID: 2100000, guid: 3f14dcb1436357e409c8f5c9a6a2eb3e, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: gorro
-    second: {fileID: 2100000, guid: 3f14dcb1436357e409c8f5c9a6a2eb3e, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -53,11 +33,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: saltar
+      name: Saltar
       takeName: Armature|ArmatureAction.001
       internalID: -1422011007694221501
-      firstFrame: 20
-      lastFrame: 40
+      firstFrame: 12
+      lastFrame: 15
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -65,7 +45,7 @@ ModelImporter:
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 0
-      loopBlend: 1
+      loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0

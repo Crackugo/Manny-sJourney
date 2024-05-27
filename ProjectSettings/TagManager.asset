@@ -8,6 +8,13 @@ TagManager:
   - Bench
   - Guy
   - Spike
+  - floor
+  - JumpPad
+  - FallingStructure
+  - Wall
+  - PowerUp
+  - FallingPlatform
+  - MovingPlatform
   layers:
   - Default
   - TransparentFX
