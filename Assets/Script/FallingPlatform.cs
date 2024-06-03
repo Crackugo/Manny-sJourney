@@ -3,7 +3,7 @@ using System.Collections;
 
 public class FallingPlatform : MonoBehaviour
 {
-    public float fallSpeed = 5f;
+    public float fallSpeed = 10f;
     public float delayBeforeFall = 1f;
 
     private Vector3 initialPosition;

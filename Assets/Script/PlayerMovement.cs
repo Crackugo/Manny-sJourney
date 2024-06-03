@@ -39,10 +39,14 @@ public class PlayerMovement : MonoBehaviour
 
     public Animator animator;
     public PlatformManager platformsManager;
+    public PowerUpManager powerUpManager;
+    public MovingPlatformManager movingPlatformManager;
+    public GameObject checkPoint;
 
     private void Start()
     {
         originalMaxFallSpeed = maxFallSpeed;
+            checkPoint.transform.position = bench.transform.position + new Vector3(0, 3, 0);
     }
 
     public GameObject bench; // Reference to the last bench touched by the player
@@ -54,12 +58,15 @@ public class PlayerMovement : MonoBehaviour
         if (other.CompareTag("Bench")) // Assuming the benches have a tag named "Bench"
         {
             bench = other.gameObject; // Update the reference to the last bench touched
+            checkPoint.transform.position = bench.transform.position + new Vector3(0, 3, 0);
         }
         else if (other.CompareTag("RespawnBox")) // Assuming the respawn boxes have a tag named "RespawnBox"
         {
             if (bench != null)
             {
                 platformsManager.ResetAllPlatforms();
+                powerUpManager.EnableAllChildren();
+                movingPlatformManager.ResetAllPlatforms();
                 TeleportPlayerToLastBench(); // Teleport the player to the last bench touched
             }
             else
@@ -77,7 +84,10 @@ public class PlayerMovement : MonoBehaviour
             if (bench != null)
             {
                 platformsManager.ResetAllPlatforms();
+                powerUpManager.EnableAllChildren();
                 TeleportPlayerToLastBench();
+                movingPlatformManager.ResetAllPlatforms();
+                transform.SetParent(originalParent);
             }
             else
             {
@@ -87,6 +97,8 @@ public class PlayerMovement : MonoBehaviour
         else if (other.CompareTag("PowerUp"))
         {
             canDash = true;
+            other.gameObject.SetActive(false);
+
         }
         else if (other.CompareTag("JumpPad"))
         {
@@ -137,6 +149,8 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        checkPoint.transform.Rotate(Vector3.left * 100.0f * Time.deltaTime);
+
         bool groundedPlayer = (controller.collisionFlags & CollisionFlags.Below) != 0;
         float currentGravity = gravityValue;
 
