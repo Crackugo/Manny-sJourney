@@ -2,13 +2,14 @@ using UnityEngine;
 
 public class CloudMovement : MonoBehaviour
 {
-    public float speed = 2f;
+    private float speed;
 
     private CloudSpawner spawner;
 
     void Start()
     {
         spawner = FindObjectOfType<CloudSpawner>();
+        speed = Random.Range(20f, 40f);
     }
 
     void Update()

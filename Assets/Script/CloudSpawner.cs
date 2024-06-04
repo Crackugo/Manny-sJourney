@@ -33,6 +33,8 @@ public class CloudSpawner : MonoBehaviour
     {
         Vector3 spawnPosition = spawnPoint.position;
         spawnPosition.y = Random.Range(-80f, -6f);  // Adjust based on your screen bounds
+        spawnPosition.z = Random.Range(-3.5f, 250f);  // Adjust based on your screen bounds
+        print(spawnPosition.z);
         Instantiate(cloudPrefab, spawnPosition, Quaternion.identity);
     }
 
