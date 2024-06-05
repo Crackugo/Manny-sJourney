@@ -31,7 +31,8 @@ public class CameraPlayer : MonoBehaviour
         initialRotation = transform.rotation;
 
         // Start the camera movement routine
-        StartCoroutine(StartCameraMovement());
+        //StartCoroutine(StartCameraMovement());
+        isRotating=false;
     }
 
     IEnumerator StartCameraMovement()

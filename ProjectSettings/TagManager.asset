@@ -8,7 +8,15 @@ TagManager:
   - Bench
   - Guy
   - Spike
+  - floor
+  - JumpPad
+  - FallingStructure
   - Wall
+  - PowerUp
+  - FallingPlatform
+  - MovingPlatform
+  - MonsterStart
+  - MonsterSecond
   layers:
   - Default
   - TransparentFX
@@ -16,7 +24,6 @@ TagManager:
   - 
   - Water
   - UI
-  - 
   - 
   - 
   - 

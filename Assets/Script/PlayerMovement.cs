@@ -1,12 +1,11 @@
 using System.Collections;
 using UnityEngine;
 
-
 public class PlayerMovement : MonoBehaviour
 {
     // [Unity References]
-    public Camera camera;
-    private CharacterController controller;
+    public  new Camera camera;
+    public CharacterController controller;
 
     // [Movement Parameters]
     public float playerMaxSpeed = 10.0f;
@@ -24,6 +23,9 @@ public class PlayerMovement : MonoBehaviour
     private bool canDash = false;
     private bool touchingWall = false;
     private bool isCtrlPressed = false;
+    private bool canJump = false;
+    private bool monsterAtack = false;
+    private bool monsterAtack2 = false;
 
     // [Input Handling Related Variables]
     private float ctrlPressedTime;
@@ -38,28 +40,50 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 move;
 
     public Animator animator;
+    public PlatformManager platformsManager;
+    public PowerUpManager powerUpManager;
+    public MovingPlatformManager movingPlatformManager;
+    public GameObject checkPoint;
+    public CutsceneHandler cutsceneHandler;
 
     private void Start()
     {
-        controller = gameObject.AddComponent<CharacterController>();
         originalMaxFallSpeed = maxFallSpeed;
+            checkPoint.transform.position = bench.transform.position + new Vector3(0, 3, 0);
     }
-
 
     public GameObject bench; // Reference to the last bench touched by the player
 
+    private Transform originalParent; // Store the original parent of the player
+
     private void OnTriggerEnter(Collider other)
     {
-
         if (other.CompareTag("Bench")) // Assuming the benches have a tag named "Bench"
         {
-
             bench = other.gameObject; // Update the reference to the last bench touched
+            checkPoint.transform.position = bench.transform.position + new Vector3(0, 3, 0);
+
+        }
+        else if (other.CompareTag("MonsterStart")) // Assuming the benches have a tag named "Bench"
+        {
+            if(monsterAtack==false){
+                monsterAtack=true;
+                cutsceneHandler.StartKilling();
+            }   
+        }else if (other.CompareTag("MonsterSecond")) // Assuming the benches have a tag named "Bench"
+        {
+            if(!monsterAtack2){
+                monsterAtack2 = true;
+                cutsceneHandler.ChangeStairs();
+            }
         }
         else if (other.CompareTag("RespawnBox")) // Assuming the respawn boxes have a tag named "RespawnBox"
         {
             if (bench != null)
             {
+                platformsManager.ResetAllPlatforms();
+                powerUpManager.EnableAllChildren();
+                movingPlatformManager.ResetAllPlatforms();
                 TeleportPlayerToLastBench(); // Teleport the player to the last bench touched
             }
             else
@@ -67,11 +91,20 @@ public class PlayerMovement : MonoBehaviour
                 Debug.LogWarning("No last bench touched!");
             }
         }
+        else if (other.CompareTag("FallingPlatform")) // Assuming the respawn boxes have a tag named "RespawnBox"
+        {
+            FallingPlatform fall = other.GetComponent<FallingPlatform>();
+            fall.StartFalling();
+        }
         else if (other.CompareTag("Spike"))
         {
             if (bench != null)
             {
+                platformsManager.ResetAllPlatforms();
+                powerUpManager.EnableAllChildren();
                 TeleportPlayerToLastBench();
+                movingPlatformManager.ResetAllPlatforms();
+                transform.SetParent(originalParent);
             }
             else
             {
@@ -81,11 +114,32 @@ public class PlayerMovement : MonoBehaviour
         else if (other.CompareTag("PowerUp"))
         {
             canDash = true;
+            other.gameObject.SetActive(false);
+
         }
         else if (other.CompareTag("JumpPad"))
         {
             jumpSpeed = 50;
         }
+        else if (other.CompareTag("MovingPlatform"))
+        {
+            originalParent = transform.parent;
+
+            // Find the child called "Icosphere" from the other object
+            Transform IcosphereTransform = other.transform.Find("Icosphere");
+            if (IcosphereTransform != null)
+            {
+                transform.SetParent(IcosphereTransform);
+            }
+            else
+            {
+                transform.SetParent(other.transform);
+            }
+
+            // Log the new parent of the object
+            Debug.Log("New parent: " + transform.parent.name);
+        }
+
     }
 
     private void OnTriggerExit(Collider other)
@@ -95,28 +149,34 @@ public class PlayerMovement : MonoBehaviour
         {
             jumpSpeed = 20;
         }
+        else if (other.CompareTag("MovingPlatform"))
+        {
+            transform.SetParent(originalParent);
+        }
     }
 
     private void TeleportPlayerToLastBench()
     {
         controller.enabled = false;
-        controller.transform.position = bench.transform.position + new Vector3(0, 0, 0);
+        controller.transform.position = bench.transform.position + new Vector3(0, 1, 0);
         move = new Vector3(0, 0, 0);
         yVelocity = 0;
         controller.enabled = true;
+        monsterAtack=false;
+        monsterAtack2=false;
+        cutsceneHandler.ResetEverything();
     }
-
 
     void Update()
     {
+        checkPoint.transform.Rotate(Vector3.left * 100.0f * Time.deltaTime);
+
         bool groundedPlayer = (controller.collisionFlags & CollisionFlags.Below) != 0;
         float currentGravity = gravityValue;
 
-
-
         if (groundedPlayer)
         {
-
+            canJump = true;
             animator.SetBool("isJumping", false);
             frontVelocity = 0;
             sideVelocity = 0;
@@ -134,13 +194,10 @@ public class PlayerMovement : MonoBehaviour
             if (touchingWall && bonusV > 0 && Input.GetAxis("Vertical") <= 0.5)
             {
                 bonusV *= 0.9f;
-
             }
             yVelocity = Mathf.Clamp(yVelocity - currentGravity * Time.deltaTime, maxFallSpeed, Mathf.Infinity);
             yVelocity = Mathf.Max(yVelocity, maxFallSpeed);
         }
-
-
 
         frontVelocity = Input.GetAxis("Vertical") * playerMaxSpeed + bonusV;
         sideVelocity = Input.GetAxis("Horizontal") * playerMaxSpeed + Input.GetAxis("Horizontal");
@@ -155,11 +212,11 @@ public class PlayerMovement : MonoBehaviour
             lastVelocity = frontVelocity;
         }
 
-
         if (Input.GetButtonDown("Jump"))
         {
-            if (groundedPlayer)
+            if (canJump)
             {
+                canJump = false;
                 animator.SetBool("isJumping", true);
                 yVelocity = jumpSpeed;
             }
@@ -178,13 +235,11 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (Physics.Raycast(transform.position, transform.right, out hitRight, raycastDistance))
         {
-
             if (hitRight.collider.CompareTag("Wall"))
             {
                 touchingWall = true;
                 maxFallSpeed = -1f;
                 canDash = true;
-
             }
         }
         else
@@ -194,9 +249,7 @@ public class PlayerMovement : MonoBehaviour
                 maxFallSpeed = originalMaxFallSpeed;
                 touchingWall = false;
             }
-
         }
-
 
         if ((Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl)) && canFly)
         {
@@ -238,7 +291,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 bonusV = 10;
             }
-            StartCoroutine(Dash(groundedPlayer, transform.forward));
+            StartCoroutine(Dash(canJump, transform.forward));
             frontVelocity = playerMaxSpeed + bonusV;
             lastVelocity = frontVelocity;
         }
@@ -266,7 +319,9 @@ public class PlayerMovement : MonoBehaviour
         }
 
         controller.Move(move * Time.deltaTime);
+
         transform.rotation = Quaternion.Euler(0, camera.transform.eulerAngles.y, 0);
+
     }
 
 
@@ -289,6 +344,7 @@ public class PlayerMovement : MonoBehaviour
 
                 isDashing = false; // Exit dash
                 canDash = true;
+                canJump = false;
                 break;
             }
             Vector3 moveDash = dashDirection * dashSpeed * Time.deltaTime;
@@ -298,9 +354,5 @@ public class PlayerMovement : MonoBehaviour
         }
 
         isDashing = false;
-
     }
-
-
-
 }
