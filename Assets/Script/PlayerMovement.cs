@@ -124,7 +124,10 @@ public class PlayerMovement : MonoBehaviour
         else if (other.CompareTag("MovingPlatform"))
         {
             originalParent = transform.parent;
-
+            canJump=true;
+            yVelocity=0;
+            canDash=true;
+            animator.SetBool("isJumping", false);
             // Find the child called "Icosphere" from the other object
             Transform IcosphereTransform = other.transform.Find("Icosphere");
             if (IcosphereTransform != null)
