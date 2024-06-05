@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     // [Unity References]
-    public Camera camera;
+    public  new Camera camera;
     public CharacterController controller;
 
     // [Movement Parameters]
@@ -24,6 +24,8 @@ public class PlayerMovement : MonoBehaviour
     private bool touchingWall = false;
     private bool isCtrlPressed = false;
     private bool canJump = false;
+    private bool monsterAtack = false;
+    private bool monsterAtack2 = false;
 
     // [Input Handling Related Variables]
     private float ctrlPressedTime;
@@ -42,6 +44,7 @@ public class PlayerMovement : MonoBehaviour
     public PowerUpManager powerUpManager;
     public MovingPlatformManager movingPlatformManager;
     public GameObject checkPoint;
+    public CutsceneHandler cutsceneHandler;
 
     private void Start()
     {
@@ -59,6 +62,20 @@ public class PlayerMovement : MonoBehaviour
         {
             bench = other.gameObject; // Update the reference to the last bench touched
             checkPoint.transform.position = bench.transform.position + new Vector3(0, 3, 0);
+
+        }
+        else if (other.CompareTag("MonsterStart")) // Assuming the benches have a tag named "Bench"
+        {
+            if(monsterAtack==false){
+                monsterAtack=true;
+                cutsceneHandler.StartKilling();
+            }   
+        }else if (other.CompareTag("MonsterSecond")) // Assuming the benches have a tag named "Bench"
+        {
+            if(!monsterAtack2){
+                monsterAtack2 = true;
+                cutsceneHandler.ChangeStairs();
+            }
         }
         else if (other.CompareTag("RespawnBox")) // Assuming the respawn boxes have a tag named "RespawnBox"
         {
@@ -145,6 +162,9 @@ public class PlayerMovement : MonoBehaviour
         move = new Vector3(0, 0, 0);
         yVelocity = 0;
         controller.enabled = true;
+        monsterAtack=false;
+        monsterAtack2=false;
+        cutsceneHandler.ResetEverything();
     }
 
     void Update()
@@ -299,8 +319,12 @@ public class PlayerMovement : MonoBehaviour
         }
 
         controller.Move(move * Time.deltaTime);
+
         transform.rotation = Quaternion.Euler(0, camera.transform.eulerAngles.y, 0);
+
     }
+
+
 
     IEnumerator Dash(bool ground, Vector3 dashDirection)
     {
