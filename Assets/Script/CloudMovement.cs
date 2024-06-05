@@ -9,7 +9,7 @@ public class CloudMovement : MonoBehaviour
     void Start()
     {
         spawner = FindObjectOfType<CloudSpawner>();
-        speed = Random.Range(20f, 40f);
+        speed = Random.Range(30f, 60f);
     }
 
     void Update()
