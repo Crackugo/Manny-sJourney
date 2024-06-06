@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public bool canMove = true;
     // [Unity References]
     public  new Camera camera;
     public CharacterController controller;
@@ -169,6 +170,10 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (!canMove)
+        {
+            return;
+        }
         checkPoint.transform.Rotate(Vector3.left * 100.0f * Time.deltaTime);
 
         bool groundedPlayer = (controller.collisionFlags & CollisionFlags.Below) != 0;
