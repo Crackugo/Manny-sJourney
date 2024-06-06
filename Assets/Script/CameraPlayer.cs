@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class CameraPlayer : MonoBehaviour
 {
+    public bool canControl = true; 
+
     // Speed of camera rotation and zoom out
     public float rotationSpeed = 30.0f;
     public float zoomSpeed = 5.0f;
@@ -67,7 +69,7 @@ public class CameraPlayer : MonoBehaviour
 
     void LateUpdate()
     {
-        if (player != null && !isRotating)
+        if (player != null && !isRotating && canControl)
         {
             // Calculate yaw and pitch angles based on mouse input
             yaw += Input.GetAxis("Mouse X") * sensitivity;
