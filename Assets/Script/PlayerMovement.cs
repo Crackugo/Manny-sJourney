@@ -1,8 +1,17 @@
+using FMODUnity;
 using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public EventReference footstepEventReference;
+    public EventReference jumpEvent;
+    public EventReference landEvent;
+
+    bool playerismoving;
+
+    public float walkingspeed;
+
     public bool canMove = true;
     // [Unity References]
     public  new Camera camera;
@@ -47,10 +56,15 @@ public class PlayerMovement : MonoBehaviour
     public GameObject checkPoint;
     public CutsceneHandler cutsceneHandler;
 
+    private bool wasGrounded;
+    bool hasPlayedLandingSound = false;
+
     private void Start()
     {
         originalMaxFallSpeed = maxFallSpeed;
             checkPoint.transform.position = bench.transform.position + new Vector3(0, 3, 0);
+
+        InvokeRepeating("CallFootsteps", 0, walkingspeed);
     }
 
     public GameObject bench; // Reference to the last bench touched by the player
@@ -181,6 +195,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (groundedPlayer)
         {
+            if (!wasGrounded && yVelocity < -8f && !hasPlayedLandingSound) // Check if the player just landed
+            {
+                FMODUnity.RuntimeManager.PlayOneShot(landEvent); // Play landing sound
+                hasPlayedLandingSound = true;
+            }
             canJump = true;
             animator.SetBool("isJumping", false);
             frontVelocity = 0;
@@ -195,7 +214,9 @@ public class PlayerMovement : MonoBehaviour
             }
         }
         else
-        {
+        {   
+            playerismoving = false;
+            hasPlayedLandingSound = false;
             if (touchingWall && bonusV > 0 && Input.GetAxis("Vertical") <= 0.5)
             {
                 bonusV *= 0.9f;
@@ -223,6 +244,8 @@ public class PlayerMovement : MonoBehaviour
             {
                 canJump = false;
                 animator.SetBool("isJumping", true);
+                playerismoving = false;
+                FMODUnity.RuntimeManager.PlayOneShot(jumpEvent);
                 yVelocity = jumpSpeed;
             }
         }
@@ -314,18 +337,23 @@ public class PlayerMovement : MonoBehaviour
         Vector3 verticalMove = camera.transform.right * sideVelocity;
         move = horizontalMove + verticalMove;
         move.y = yVelocity;
-        if (frontVelocity != 0)
+        if (frontVelocity != 0 && groundedPlayer)
         {
             animator.SetBool("isMoving", true);
+            playerismoving = true;
+
         }
         else
         {
             animator.SetBool("isMoving", false);
+            playerismoving = false;
         }
 
         controller.Move(move * Time.deltaTime);
 
         transform.rotation = Quaternion.Euler(0, camera.transform.eulerAngles.y, 0);
+
+        wasGrounded = groundedPlayer;
 
     }
 
@@ -343,6 +371,8 @@ public class PlayerMovement : MonoBehaviour
                 if (ground)
                 {
                     animator.SetBool("isJumping", true);
+                    playerismoving = false;
+                    FMODUnity.RuntimeManager.PlayOneShot(jumpEvent);
                     yVelocity = jumpSpeed;
                     doubleJump = true;
                 }
@@ -359,5 +389,18 @@ public class PlayerMovement : MonoBehaviour
         }
 
         isDashing = false;
+    }
+
+    void CallFootsteps()
+    {
+        if (playerismoving == true)
+        {
+            FMODUnity.RuntimeManager.PlayOneShot(footstepEventReference);
+        }
+    }
+
+    void OnDisable()
+    {
+        playerismoving = false;
     }
 }

@@ -1016,7 +1016,7 @@ MonoBehaviour:
     Path: event:/OST placeholder - forest land - Nights Into Dreams After the Dream
   Event: 
   PlayEvent: 1
-  StopEvent: 0
+  StopEvent: 2
   AllowFadeout: 1
   TriggerOnce: 0
   Preload: 0
