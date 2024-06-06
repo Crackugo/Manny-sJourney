@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -903,6 +903,7 @@ GameObject:
   - component: {fileID: 1922856600}
   - component: {fileID: 1922856599}
   - component: {fileID: 1922856602}
+  - component: {fileID: 1922856603}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -993,6 +994,37 @@ Skybox:
   m_GameObject: {fileID: 1922856598}
   m_Enabled: 1
   m_CustomSkybox: {fileID: 2100000, guid: 2d376d668dcec9045a4b0e642a7239d9, type: 2}
+--- !u!114 &1922856603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922856598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1624455415
+      Data2: 1126088842
+      Data3: 877077438
+      Data4: -2144054411
+    Path: event:/OST placeholder - forest land - Nights Into Dreams After the Dream
+  Event: 
+  PlayEvent: 1
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &2000632597
 GameObject:
   m_ObjectHideFlags: 0

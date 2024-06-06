@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{02810311-0599-4331-920a-cc0c498430c1}">
+		<property name="assetPath">
+			<value>Shantae and the Pirate's Curse OST_ We Love Burning Town.mp3</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>218.9061224489796</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{31210c9d-2bbb-4e39-8cb8-fa049b2300a3}</destination>
+		</relationship>
+	</object>
+</objects>

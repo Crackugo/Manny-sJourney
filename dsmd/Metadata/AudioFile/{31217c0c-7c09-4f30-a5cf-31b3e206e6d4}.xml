@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{31217c0c-7c09-4f30-a5cf-31b3e206e6d4}">
+		<property name="assetPath">
+			<value>som de raio.mp3</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>25.488</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{31210c9d-2bbb-4e39-8cb8-fa049b2300a3}</destination>
+		</relationship>
+	</object>
+</objects>
