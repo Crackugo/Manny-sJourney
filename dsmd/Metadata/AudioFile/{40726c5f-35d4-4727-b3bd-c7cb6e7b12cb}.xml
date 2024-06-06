@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{40726c5f-35d4-4727-b3bd-c7cb6e7b12cb}">
+		<property name="assetPath">
+			<value>Sound Effect - Muffled Distant Explosion.mp3</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>6.6873469387755105</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{31210c9d-2bbb-4e39-8cb8-fa049b2300a3}</destination>
+		</relationship>
+	</object>
+</objects>

@@ -1,5 +1,205 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6858395939647508472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/OST placeholder - lava land - Spyro 2 Skelos Badlands
+  m_EditorClassIdentifier: 
+  Path: event:/OST placeholder - lava land - Spyro 2 Skelos Badlands
+  Guid:
+    Data1: 1448287285
+    Data2: 1336649987
+    Data3: 827991215
+    Data4: -1817209087
+  Banks:
+  - {fileID: -1688366688518857273}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 143908
+--- !u!114 &-4989806895398916497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/OST placeholder - forest land - Nights Into Dreams After the Dream
+  m_EditorClassIdentifier: 
+  Path: event:/OST placeholder - forest land - Nights Into Dreams After the Dream
+  Guid:
+    Data1: -1624455415
+    Data2: 1126088842
+    Data3: 877077438
+    Data4: -2144054411
+  Banks:
+  - {fileID: -1688366688518857273}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 134000
+--- !u!114 &-4866218728652988049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/ambient SFX - lava land
+  m_EditorClassIdentifier: 
+  Path: event:/ambient SFX - lava land
+  Guid:
+    Data1: -70434497
+    Data2: 1136447134
+    Data3: 369899697
+    Data4: 626228788
+  Banks:
+  - {fileID: -1688366688518857273}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 44500
+--- !u!114 &-4610895430494505272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Character SFX - steps - cartoon
+  m_EditorClassIdentifier: 
+  Path: event:/Character SFX - steps - cartoon
+  Guid:
+    Data1: -1102846284
+    Data2: 1126569603
+    Data3: -408362055
+    Data4: 554556858
+  Banks:
+  - {fileID: -1688366688518857273}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1071
+--- !u!114 &-3489520303371306078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Character SFX - landing - hard
+  m_EditorClassIdentifier: 
+  Path: event:/Character SFX - landing - hard
+  Guid:
+    Data1: -497575835
+    Data2: 1213155987
+    Data3: 1051256479
+    Data4: 1727988242
+  Banks:
+  - {fileID: -1688366688518857273}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 921
+--- !u!114 &-1688366688518857273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: dsmd/Build/Desktop/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 638532512287958000
+  FileSizes: []
+  Exists: 1
+--- !u!114 &-269917836230070191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Character SFX - steps - realistic
+  m_EditorClassIdentifier: 
+  Path: event:/Character SFX - steps - realistic
+  Guid:
+    Data1: -237236202
+    Data2: 1224580611
+    Data3: -1715548996
+    Data4: 1948354633
+  Banks:
+  - {fileID: -1688366688518857273}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 500
+--- !u!114 &-198320545809056216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.strings.bank
+  m_EditorClassIdentifier: 
+  Path: dsmd/Build/Desktop/Master.strings.bank
+  Name: Master.strings
+  StudioPath: bank:/Master.strings
+  lastModified: 638532512288338757
+  FileSizes:
+  - Name: 
+    Value: 1366
+  Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12,10 +212,160 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d32cf7c32a3ed8347bac48ef5ed56d82, type: 3}
   m_Name: FMODStudioCache
   m_EditorClassIdentifier: 
-  EditorBanks: []
-  EditorEvents: []
+  EditorBanks:
+  - {fileID: -198320545809056216}
+  - {fileID: -1688366688518857273}
+  EditorEvents:
+  - {fileID: 8219157744561575444}
+  - {fileID: 8860696240878087087}
+  - {fileID: -4989806895398916497}
+  - {fileID: -269917836230070191}
+  - {fileID: -6858395939647508472}
+  - {fileID: 3437532024492082303}
+  - {fileID: -4866218728652988049}
+  - {fileID: 5148510913931245193}
+  - {fileID: -3489520303371306078}
+  - {fileID: -4610895430494505272}
+  - {fileID: 6932267587441068288}
   EditorParameters: []
-  MasterBanks: []
-  StringsBanks: []
-  cacheTime: 0
+  MasterBanks:
+  - {fileID: -1688366688518857273}
+  StringsBanks:
+  - {fileID: -198320545809056216}
+  cacheTime: 638532512288338757
   cacheVersion: 131618
+--- !u!114 &3437532024492082303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Waterfall SFX
+  m_EditorClassIdentifier: 
+  Path: event:/Waterfall SFX
+  Guid:
+    Data1: 648015671
+    Data2: 1104234917
+    Data3: -505150805
+    Data4: 1910916114
+  Banks:
+  - {fileID: -1688366688518857273}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 66586
+--- !u!114 &5148510913931245193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/ambient SFX - forest land
+  m_EditorClassIdentifier: 
+  Path: event:/ambient SFX - forest land
+  Guid:
+    Data1: -951451551
+    Data2: 1304144792
+    Data3: 104905376
+    Data4: -49464389
+  Banks:
+  - {fileID: -1688366688518857273}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 59977
+--- !u!114 &6932267587441068288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Character SFX - jump
+  m_EditorClassIdentifier: 
+  Path: event:/Character SFX - jump
+  Guid:
+    Data1: 1536401367
+    Data2: 1202829036
+    Data3: 1215504781
+    Data4: -35943334
+  Banks:
+  - {fileID: -1688366688518857273}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 819
+--- !u!114 &8219157744561575444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Character SFX - landing - soft
+  m_EditorClassIdentifier: 
+  Path: event:/Character SFX - landing - soft
+  Guid:
+    Data1: 2068681989
+    Data2: 1141455554
+    Data3: -1206418042
+    Data4: -422558777
+  Banks:
+  - {fileID: -1688366688518857273}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1071
+--- !u!114 &8860696240878087087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Lightning Enemy - Strike
+  m_EditorClassIdentifier: 
+  Path: event:/Lightning Enemy - Strike
+  Guid:
+    Data1: -2031282423
+    Data2: 1090987111
+    Data3: 2134502274
+    Data4: 1720630312
+  Banks:
+  - {fileID: -1688366688518857273}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 4550

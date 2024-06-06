@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{562c0cd4-9116-4169-bb96-3dddbd51c61f}">
+		<property name="assetPath">
+			<value>som de corvo.mp3</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>4.5119999999999996</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{31210c9d-2bbb-4e39-8cb8-fa049b2300a3}</destination>
+		</relationship>
+	</object>
+</objects>
