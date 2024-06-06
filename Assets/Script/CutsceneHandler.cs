@@ -26,6 +26,7 @@ public class CutsceneHandler : MonoBehaviour
     public void ResetEverything(){
         monster.ResetPosition();
         key.ResetPosition();
+        stack.Reset();
         door.transform.position=   originalPosition;
         parede.transform.position= new Vector3(-9,167,69);
     }
@@ -34,6 +35,7 @@ public class CutsceneHandler : MonoBehaviour
         stack.ChangeStairs();
         door.transform.position=  originalPosition + new Vector3(0,-5,0);
         monster.transform.position=new Vector3(167,210,-27.25f);
+
     }
 
 
