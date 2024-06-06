@@ -18,7 +18,6 @@ public class PlayerMovement : MonoBehaviour
     public float raycastDistance = 1f;
 
     // [Character State Flags]
-    private bool doubleJump = false;
     private bool isDashing = false;
     private bool canFly = false;
     private bool canDash = false;
@@ -46,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
     public MovingPlatformManager movingPlatformManager;
     public GameObject checkPoint;
     public CutsceneHandler cutsceneHandler;
+    public Renderer playerRenderer;
 
     private void Start()
     {
@@ -62,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
         if (other.CompareTag("Bench")) // Assuming the benches have a tag named "Bench"
         {
             bench = other.gameObject; // Update the reference to the last bench touched
-            checkPoint.transform.position = bench.transform.position + new Vector3(0, 3, 0);
+            checkPoint.transform.position = bench.transform.position + new Vector3(0, 2, 0);
 
         }
         else if (other.CompareTag("MonsterStart")) // Assuming the benches have a tag named "Bench"
@@ -84,8 +84,8 @@ public class PlayerMovement : MonoBehaviour
             {
                 platformsManager.ResetAllPlatforms();
                 powerUpManager.EnableAllChildren();
-                movingPlatformManager.ResetAllPlatforms();
-                TeleportPlayerToLastBench(); // Teleport the player to the last bench touched
+                movingPlatformManager.ResetAllPlatforms();        
+                StartCoroutine(TeleportAndHide());
             }
             else
             {
@@ -102,8 +102,8 @@ public class PlayerMovement : MonoBehaviour
             if (bench != null)
             {
                 platformsManager.ResetAllPlatforms();
-                powerUpManager.EnableAllChildren();
-                TeleportPlayerToLastBench();
+                powerUpManager.EnableAllChildren();        
+                StartCoroutine(TeleportAndHide());
                 movingPlatformManager.ResetAllPlatforms();
                 transform.SetParent(originalParent);
             }
@@ -125,6 +125,9 @@ public class PlayerMovement : MonoBehaviour
         else if (other.CompareTag("MovingPlatform"))
         {
             originalParent = transform.parent;
+            canDash=true;
+            canJump=true;
+            animator.SetBool("isJumping", false);
 
             // Find the child called "Icosphere" from the other object
             Transform IcosphereTransform = other.transform.Find("Icosphere");
@@ -156,17 +159,21 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void TeleportPlayerToLastBench()
+    private IEnumerator TeleportAndHide()
     {
+        playerRenderer.enabled = false;
         controller.enabled = false;
         controller.transform.position = bench.transform.position + new Vector3(0, 1, 0);
-        move = new Vector3(0, 0, 0);
+        move = Vector3.zero;
         yVelocity = 0;
+        yield return new WaitForSeconds(0.5f);
         controller.enabled = true;
-        monsterAtack=false;
-        monsterAtack2=false;
+        playerRenderer.enabled = true;
+        monsterAtack = false;
+        monsterAtack2 = false;
         cutsceneHandler.ResetEverything();
     }
+
 
     void Update()
     {
@@ -186,7 +193,6 @@ public class PlayerMovement : MonoBehaviour
             frontVelocity = 0;
             sideVelocity = 0;
             canDash = true;
-            doubleJump = true;
             canFly = true;
             yVelocity = -1;
             if (bonusV > 0)
@@ -344,7 +350,6 @@ public class PlayerMovement : MonoBehaviour
                 {
                     animator.SetBool("isJumping", true);
                     yVelocity = jumpSpeed;
-                    doubleJump = true;
                 }
 
                 isDashing = false; // Exit dash
