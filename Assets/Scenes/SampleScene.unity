@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44986397, g: 0.49992883, b: 0.5755816, a: 1}
+  m_IndirectSpecularColor: {r: 0.4498636, g: 0.4999286, b: 0.57558113, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5614,6 +5614,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c87a0995fd108834eb0000e7802460f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  footstepEventReference:
+    Guid:
+      Data1: -237236202
+      Data2: 1224580611
+      Data3: -1715548996
+      Data4: 1948354633
+    Path: event:/Character SFX - steps - realistic
+  jumpEvent:
+    Guid:
+      Data1: 1536401367
+      Data2: 1202829036
+      Data3: 1215504781
+      Data4: -35943334
+    Path: event:/Character SFX - jump
+  landEvent:
+    Guid:
+      Data1: -497575835
+      Data2: 1213155987
+      Data3: 1051256479
+      Data4: 1727988242
+    Path: event:/Character SFX - landing - hard
+  walkingspeed: 0.5
   canMove: 1
   camera: {fileID: 963194227}
   controller: {fileID: 336189378}
@@ -16323,6 +16345,8 @@ GameObject:
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
   - component: {fileID: 963194230}
+  - component: {fileID: 963194231}
+  - component: {fileID: 963194232}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -16434,6 +16458,50 @@ Skybox:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 1
   m_CustomSkybox: {fileID: 2100000, guid: 6e8442dd275001c4f9d167e8d1b8c962, type: 2}
+--- !u!114 &963194231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1448287285
+      Data2: 1336649987
+      Data3: 827991215
+      Data4: -1817209087
+    Path: event:/OST placeholder - lava land - Spyro 2 Skelos Badlands
+  Event: 
+  PlayEvent: 1
+  StopEvent: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &963194232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attenuationObject: {fileID: 0}
 --- !u!1001 &968383067
 PrefabInstance:
   m_ObjectHideFlags: 0
