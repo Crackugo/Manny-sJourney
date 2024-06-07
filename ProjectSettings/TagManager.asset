@@ -17,6 +17,8 @@ TagManager:
   - MovingPlatform
   - MonsterStart
   - MonsterSecond
+  - Key
+  - Door
   layers:
   - Default
   - TransparentFX
@@ -24,6 +26,7 @@ TagManager:
   - 
   - Water
   - UI
+  - 
   - 
   - 
   - 

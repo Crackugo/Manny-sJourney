@@ -1,12 +1,26 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
+using FMODUnity;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public bool canMove = true;
+    public EventReference footstepEventReference;
+    public EventReference jumpEvent;
+    public EventReference landEvent;
+
+    bool playerismoving;
+    public float walkingspeed;
+    private bool wasGrounded;
+    bool hasPlayedLandingSound = false;
     // [Unity References]
     public  new Camera camera;
     public CharacterController controller;
+    public GameObject door;
+    public GameObject door2;
+    public GameObject room;
+    public float interactionDistance = 3.0f;
 
     // [Movement Parameters]
     public float playerMaxSpeed = 10.0f;
@@ -18,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
     public float raycastDistance = 1f;
 
     // [Character State Flags]
+    private bool doubleJump = false;
     private bool isDashing = false;
     private bool canFly = false;
     private bool canDash = false;
@@ -45,12 +60,12 @@ public class PlayerMovement : MonoBehaviour
     public MovingPlatformManager movingPlatformManager;
     public GameObject checkPoint;
     public CutsceneHandler cutsceneHandler;
-    public Renderer playerRenderer;
 
     private void Start()
     {
         originalMaxFallSpeed = maxFallSpeed;
             checkPoint.transform.position = bench.transform.position + new Vector3(0, 3, 0);
+        InvokeRepeating("CallFootsteps", 0, walkingspeed);
     }
 
     public GameObject bench; // Reference to the last bench touched by the player
@@ -62,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
         if (other.CompareTag("Bench")) // Assuming the benches have a tag named "Bench"
         {
             bench = other.gameObject; // Update the reference to the last bench touched
-            checkPoint.transform.position = bench.transform.position + new Vector3(0, 2, 0);
+            checkPoint.transform.position = bench.transform.position + new Vector3(0, 3, 0);
 
         }
         else if (other.CompareTag("MonsterStart")) // Assuming the benches have a tag named "Bench"
@@ -84,8 +99,8 @@ public class PlayerMovement : MonoBehaviour
             {
                 platformsManager.ResetAllPlatforms();
                 powerUpManager.EnableAllChildren();
-                movingPlatformManager.ResetAllPlatforms();        
-                StartCoroutine(TeleportAndHide());
+                movingPlatformManager.ResetAllPlatforms();
+                TeleportPlayerToLastBench(); // Teleport the player to the last bench touched
             }
             else
             {
@@ -102,8 +117,8 @@ public class PlayerMovement : MonoBehaviour
             if (bench != null)
             {
                 platformsManager.ResetAllPlatforms();
-                powerUpManager.EnableAllChildren();        
-                StartCoroutine(TeleportAndHide());
+                powerUpManager.EnableAllChildren();
+                TeleportPlayerToLastBench();
                 movingPlatformManager.ResetAllPlatforms();
                 transform.SetParent(originalParent);
             }
@@ -125,9 +140,6 @@ public class PlayerMovement : MonoBehaviour
         else if (other.CompareTag("MovingPlatform"))
         {
             originalParent = transform.parent;
-            canDash=true;
-            canJump=true;
-            animator.SetBool("isJumping", false);
 
             // Find the child called "Icosphere" from the other object
             Transform IcosphereTransform = other.transform.Find("Icosphere");
@@ -159,28 +171,20 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private IEnumerator TeleportAndHide()
+    private void TeleportPlayerToLastBench()
     {
-        playerRenderer.enabled = false;
         controller.enabled = false;
         controller.transform.position = bench.transform.position + new Vector3(0, 1, 0);
-        move = Vector3.zero;
+        move = new Vector3(0, 0, 0);
         yVelocity = 0;
-        yield return new WaitForSeconds(0.5f);
         controller.enabled = true;
-        playerRenderer.enabled = true;
-        monsterAtack = false;
-        monsterAtack2 = false;
+        monsterAtack=false;
+        monsterAtack2=false;
         cutsceneHandler.ResetEverything();
     }
 
-
     void Update()
     {
-        if (!canMove)
-        {
-            return;
-        }
         checkPoint.transform.Rotate(Vector3.left * 100.0f * Time.deltaTime);
 
         bool groundedPlayer = (controller.collisionFlags & CollisionFlags.Below) != 0;
@@ -188,11 +192,18 @@ public class PlayerMovement : MonoBehaviour
 
         if (groundedPlayer)
         {
+            if (!wasGrounded && yVelocity < -8f && !hasPlayedLandingSound) // Check if the player just landed
+                {
+                    FMODUnity.RuntimeManager.PlayOneShot(landEvent); // Play landing sound
+                    hasPlayedLandingSound = true;
+                }
+            
             canJump = true;
             animator.SetBool("isJumping", false);
             frontVelocity = 0;
             sideVelocity = 0;
             canDash = true;
+            doubleJump = true;
             canFly = true;
             yVelocity = -1;
             if (bonusV > 0)
@@ -202,6 +213,8 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
+            playerismoving = false;
+            hasPlayedLandingSound = false;
             if (touchingWall && bonusV > 0 && Input.GetAxis("Vertical") <= 0.5)
             {
                 bonusV *= 0.9f;
@@ -229,6 +242,8 @@ public class PlayerMovement : MonoBehaviour
             {
                 canJump = false;
                 animator.SetBool("isJumping", true);
+                playerismoving = false;
+                FMODUnity.RuntimeManager.PlayOneShot(jumpEvent);
                 yVelocity = jumpSpeed;
             }
         }
@@ -320,18 +335,50 @@ public class PlayerMovement : MonoBehaviour
         Vector3 verticalMove = camera.transform.right * sideVelocity;
         move = horizontalMove + verticalMove;
         move.y = yVelocity;
-        if (frontVelocity != 0)
+        if (frontVelocity != 0 && groundedPlayer)
         {
+            playerismoving = true;
             animator.SetBool("isMoving", true);
         }
         else
         {
+            playerismoving = false;
             animator.SetBool("isMoving", false);
         }
 
         controller.Move(move * Time.deltaTime);
 
         transform.rotation = Quaternion.Euler(0, camera.transform.eulerAngles.y, 0);
+
+        // Door interaction logic
+        if (door != null)
+        {
+            float distanceToDoor = Vector3.Distance(transform.position, door.transform.position);
+
+            if (distanceToDoor <= interactionDistance && Input.GetKeyDown(KeyCode.U))
+            {
+                door.SetActive(false); // Disable the door object
+            }
+        }
+
+        // disable room if door is open
+        if (door != null && !door.activeSelf && transform.position.x <20)
+        {
+            room.SetActive(false);
+        }
+
+        if (door2 != null)
+        {
+            float distanceToDoor2 = Vector3.Distance(transform.position, door2.transform.position);
+
+            if (distanceToDoor2 <= interactionDistance && Input.GetKeyDown(KeyCode.U))
+            {
+                // load menu scene
+                SceneManager.LoadScene("Finnish");
+            }
+        }
+
+        wasGrounded = groundedPlayer;
 
     }
 
@@ -348,8 +395,11 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (ground)
                 {
+                    playerismoving = false;
+                    FMODUnity.RuntimeManager.PlayOneShot(jumpEvent);
                     animator.SetBool("isJumping", true);
                     yVelocity = jumpSpeed;
+                    doubleJump = true;
                 }
 
                 isDashing = false; // Exit dash
@@ -364,5 +414,18 @@ public class PlayerMovement : MonoBehaviour
         }
 
         isDashing = false;
+    }
+
+    void CallFootsteps()
+    {
+        if (playerismoving == true)
+        {
+            FMODUnity.RuntimeManager.PlayOneShot(footstepEventReference);
+        }
+    }
+
+    void OnDisable()
+    {
+        playerismoving = false;
     }
 }
